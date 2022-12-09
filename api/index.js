@@ -1,12 +1,17 @@
-const express =require("express");
+const express = require("express");
 
 const app = express();
 
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
-
-const authRoute = require("./routes/auth")
-const userRoute = require("./routes/users")
+const authRoute = require("./routes/auth");
+const userRoute = require("./routes/users");
+const postRoute = require("./routes/posts");
+const categoryRoute = require("./routes/categories");
+const multer  = require('multer');
+const { response } = require("express");
+// multer is a middelware for handling a multiple form of data. 
+// we use it here for handling the images uploaded 
 dotenv.config();
 app.use(express.json())
 
@@ -21,8 +26,23 @@ mongoose
   .catch((err) => {
     console.log(err.message);
   });
+
+  const storage = multer.diskStorage({destination:(req,file,cb)=>{
+    cb(null,"images")
+  } ,filename: (req, file, cb)=>{
+cb(null,req.body.name)
+  }
+});
+const upload =multer({storage:storage})
+//we gonna use the post method to upload a single 
+app.post("/api/upload",upload.single(),(req,res)=>{
+  response.status(201).json("file has been uploaded")
+})
+
     app.use("/api/auth",authRoute)
     app.use("/api/users",userRoute)
+    app.use("/api/posts",postRoute)
+    app.use("/api/category",categoryRoute)
 
 
 
