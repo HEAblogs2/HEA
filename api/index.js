@@ -1,6 +1,5 @@
 const express = require("express");
 
-const app = express();
 
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
@@ -9,17 +8,25 @@ const userRoute = require("./routes/users");
 const postRoute = require("./routes/posts");
 const categoryRoute = require("./routes/categories");
 const multer  = require('multer');
-const { response } = require("express");
 // multer is a middelware for handling a multiple form of data. 
 // we use it here for handling the images uploaded 
 dotenv.config();
+
+const app = express();
+
 app.use(express.json())
+app.use("/api/auth",authRoute)
+app.use("/api/users",verifyAuth,userRoute)
+app.use("/api/posts",postRoute)
+app.use("/api/categories",categoryRoute)
+
+
 
 mongoose.set('strictQuery', false);
 
 
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect("mongodb+srv://houssem:1234@cluster0.jsonddh.mongodb.net/blog?retryWrites=true&w=majority")
   .then(() => {
     console.log('connected to db');
   })
@@ -34,19 +41,15 @@ cb(null,req.body.name)
   }
 });
 const upload =multer({storage:storage})
-//we gonna use the post method to upload a single 
-app.post("/api/upload",upload.single(),(req,res)=>{
-  response.status(201).json("file has been uploaded")
+//we gonna use the post method to upload all the image in a single file 
+app.post("/api/upload",upload.single("file"),(req,res)=>{
+  res.status(201).json("file has been uploaded")
 })
 
-    app.use("/api/auth",authRoute)
-    app.use("/api/users",userRoute)
-    app.use("/api/posts",postRoute)
-    app.use("/api/category",categoryRoute)
+   
 
 
-
-app.listen("5001",()=>{
+app.listen("5002",()=>{
 
     console.log("backend is running ");
 });
