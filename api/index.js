@@ -1,3 +1,5 @@
+
+
 const express = require("express");
 
 
@@ -16,7 +18,7 @@ const app = express();
 
 app.use(express.json())
 app.use("/api/auth",authRoute)
-app.use("/api/users",userRoute)
+app.use("/api/users",verifyAuth,userRoute)
 app.use("/api/posts",postRoute)
 app.use("/api/categories",categoryRoute)
 
@@ -53,3 +55,5 @@ app.listen("5002",()=>{
 
     console.log("backend is running ");
 });
+
+

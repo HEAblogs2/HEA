@@ -1,3 +1,4 @@
+
 const router = require('express').Router();
 
 const User = require('../models/User');
@@ -71,3 +72,4 @@ res.status(200).json({username: user.username, email: user.email, profilePic: us
 
 
 module.exports =router
+
